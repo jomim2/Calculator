@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=New+Amsterdam&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/e3a9d44341.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="icon" href="./Calculator_31111.ico" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background-color: #f6eacb;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="CalculatorArea">
+      <div id="Calculator"></div>
+    </div>
+    <script>
+      class RealCalculator {
+        constructor(id) {
+          this.id = id;
+        }
+        displayCalculator(targetDom) {
+          let HTML = `
+                <!--html 시작 부분-->
+        <div class="bigBox">
+            <div class="canvasBtn" id="canvasBtn${this.id}">GRAPH</div>
+            <div class="mainBox" id="mainBox${this.id}">
+                <div class="resultArea" id="result${this.id}">0</div>
+                <div class="rangeV">
+                    <input type="range" min="0" max="4" class="range" value="0" id="range${this.id}">
+                    <div class="spanClass">
+                    <span class="calV">F</span>
+                    <span class="calV">4</span>
+                    <span class="calV">3</span>
+                    <span class="calV">2</span>
+                    <span class="calV">0</span>
+                </div>
+                <div class="btnArea" >
+                    <button data-value="C" class="pointColor">C</button>
+                    <button data-value="(">(</button>
+                    <button data-value=")">)</button>
+                    <button data-value=">"><i data-value=">" class="fa-solid fa-play"></i></i></button>
+                    <button data-value="7">7</button>
+                    <button data-value="8">8</button>
+                    <button data-value="9">9</button>
+                    <button data-value="/"><i data-value="/" class="fa-solid fa-divide"></i></button>
+                    <button data-value="4">4</button>
+                    <button data-value="5">5</button>
+                    <button data-value="6">6</button>
+                    <button data-value="*"><i data-value="*" class="fa-solid fa-xmark"></i></button>
+                    <button data-value="1">1</button>
+                    <button data-value="2">2</button>
+                    <button data-value="3">3</button>
+                    <button data-value="-"><i data-value="-" class="fa-solid fa-minus"></i></button>
+                    <button data-value="0">0</button>
+                    <button data-value=".">.</button>
+                    <button data-value="="><i data-value="=" class="fa-solid fa-equals "></i></button>
+                    <button data-value="+"><i data-value="+" class="fa-solid fa-plus" ></i></button>
+                </div>
+            </div>
+        </div>
+            <div class="miniArea" id="miniArea${this.id}">
+                <div class="mini"><img src="https://latex.codecogs.com/svg.image?&space;y=ax&plus;y" title=" y=ax+y"/>
+                        <div> y = <input type="text" id="linearFunctionA${this.id}" pattern="[0-9]" class="inputNumber"> x + <input type="text" id="linearFunctionB${this.id}" pattern="[0-9]" class="inputNumber"></div>
+                </div>
+                <div class="mini"><img src="https://latex.codecogs.com/svg.image?y=ax^{2}&plus;bx&plus;c" title="y=ax^{2}+bx+c" />
+                    <div>y = <input type="text" id="quadraticFunctionA${this.id}" pattern="[0-9]" class="inputNumber">x<sup>2</sup>  + <input type="text" id="quadraticFunctionB${this.id}" pattern="[0-9]" class="inputNumber">x + <input type="text" id="quadraticFunctionC${this.id}" pattern="[0-9]" class="inputNumber"></div>
+                </div>
+                <div class="mini" ><img src="https://latex.codecogs.com/svg.image?y=ax^{3}&plus;bx^{2}&plus;cx&plus;d" title="y=ax^{3}+bx^{2}+cx+d" />
+                    <div>y = <input type="text" id="cubicFunctionA${this.id}" pattern="[0-9]" class="inputNumber">x<sup>3</sup> + <input type="text" id="cubicFunctionB${this.id}" pattern="[0-9]" class="inputNumber">x<sup>2</sup> + <input type="text" id="cubicFunctionC${this.id}" pattern="[0-9]" class="inputNumber">x+ <input type="text" id="cubicFunctionD${this.id}" pattern="/[0-9]/" class="inputNumber"></div>
+                </div>
+                <div class="mini"><img src="https://latex.codecogs.com/svg.image?(x-a)^{2}&plus;(y-b)^{2}=r^{2}" title="(x-a)^{2}+(y-b)^{2}=r^{2}" />
+                    <div>x좌표:<input type="text" id="circleA${this.id}" pattern="[0-9]" class="inputNumber"> y좌표:<input type="text" id="circleB${this.id}" pattern="[0-9]" class="inputNumber"> 반지름:<input type="text" id="r${this.id}" pattern="[0-9]" class="inputNumber"></div>
+                </div>
+                    <button class="draw" id="drawBtn1${this.id}">1차함수</button>
+                    <button class="draw" id="drawBtn2${this.id}">2차함수</button>
+                    <button class="draw" id="drawBtn3${this.id}">3차함수</button>
+                    <button class="draw" id="drawBtn4${this.id}">원</button>
+                    <button class="resetBtn draw" id="resetBtn${this.id}"> <i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+            <div class="canvasArea" id="canvasArea${this.id}">
+                <canvas id="canvas${this.id}" class="canvas" height="750" width="750"></canvas>
+            </div>
+            <div class="moveBox" id="moveBox${this.id}">
+                    <button class="moveBtn moveBtn1" id="moveBtn1${this.id}"><i class="fa-solid fa-up-long"></i></button>
+                    <button class="moveBtn moveBtn2" id="moveBtn2${this.id}"><i class="fa-solid fa-right-long"></i></button>
+                    <button class="moveBtn moveBtn3" id="moveBtn3${this.id}"><i class="fa-solid fa-left-long"></i></button>
+                    <button class="moveBtn moveBtn4" id="moveBtn4${this.id}"><i class="fa-solid fa-down-long"></i></button>
+                    <button class="moveBtn moveBtn5" id="moveBtn5${this.id}"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
+                    <button class="moveBtn moveBtn6" id="moveBtn6${this.id}"><i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
+                    <button class="moveBtn moveBtn7" id="moveBtn7${this.id}"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+                <div class="makeCalculator" id="makeCalculator">
+                    <div class="makeCal">계산기 생성하기</div>
+                    <div class="makeCalBtn" id="makeCalBtn"><i class="fa-solid fa-calculator makeCalculBtn" id="makeCalculBtn"></i></div>
+                    </div>
+        `;
+          let CSS = `<!--CSS 시작 부분-->
+                    <style>
+            .mainBox {
+            font-family: "New Amsterdam", sans-serif;
+            width: 270px;
+            height: 420px;
+            padding: 15px;
+            border-radius: 20px;
+            background-color: #E4C59E;
+            box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+            display: inline-block;
+            float: left;
+            margin-left: 10%;
+        }
+
+
+
+
+
+        .pointColor {
+            background-color: #ECB176;
+        }
+
+        .rangeV {
+            width: 100%;
+            height: 30px;
+        }
+
+        .range {
+            accent-color: #E9C46A;
+            float: right;
+            margin-right: 8px;
+            height: 13px;
+            width: 85px;
+            cursor:pointer;
+        }
+
+        .calV {
+            margin-left: 8px;
+        }
+
+        .spanClass {
+            height: 10px;
+            line-height: 1px;
+            float: right;
+            margin-top: 10px;
+            width: 100%;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .btnArea {
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+
+        .resultArea {
+            font-family: "New Amsterdam", sans-serif;
+            width: 270px;
+            height: 55px;
+            background-color: #C7B7A3;
+            font-size: 2.5rem;
+            line-height: 40px;
+            text-align: right;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 10px solid #DEAC80;
+            box-sizing: border-box;
+            overflow: scroll;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        button {
+            font-family: "New Amsterdam", sans-serif;
+            background-color: #543310;
+            color: #F8F4E1;
+            width: 55px;
+            height: 55px;
+            float: left;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+            border-radius: 40%;
+            margin: 4px;
+            font-size: 1.5rem;
+            transition: 0.2s;
+            border: none;
+            cursor:pointer;
+        }
+
+        button:hover {
+            background-color: #74512D;
+        }
+
+        input::-webkit-inner-spin-button {
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .miniArea {
+            font-family: "Do Hyeon", sans-serif;
+            font-size: 1rem;
+            padding: 15px;
+            width: 270px;
+            height: 305px;
+            border-radius: 20px;
+            background-color: #E4C59E;
+            box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+            display: inline-block;
+            margin-left: -300px;
+            position: relative;
+            top: -58px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        .makeCalculator{
+            font-family: "Do Hyeon", sans-serif;
+            font-size: 1rem;
+            padding: 15px;
+            width: 270px;
+            height: 305px;
+            border-radius: 20px;
+            background-color: #E4C59E;
+            box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+            margin-left: 1330px;
+            position: relative;
+            top: -405px;
+            margin-top: 10px;
+            display:none;
+        }
+        .makeCal{
+
+                height:100px;
+                font-size:1.8rem;
+                text-align:center;
+                line-height:100px;
+        }
+        .makeCalBtn{
+
+                height:180px;
+                font-size:7rem;
+                text-align:center;
+                line-height:180px;
+        }
+        .makeCalculBtn{
+                transition:0.3s;
+                cursor:pointer;
+                color:#543310;
+        }
+        .makeCalculBtn:hover{
+                transform: rotate(360deg);
+                color:#808836;
+        }
+        .makeCalculBtn:active{
+                transform : scale(1.2);
+        }
+        .mini {
+            transition: 0.2s;
+            margin: auto;
+            height: 60px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top:3px;
+            box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+        }
+
+        .canvasArea {
+            width: 800px;
+            height: 800px;
+            background-color: #DEAC80;
+            display: inline-block;
+            margin-left: 20px;
+            border-radius: 3%;
+            box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+            display: none;
+        }
+
+        .canvas {
+            box-sizing: border-box;
+            border: 2px solid #6C4E31;
+            background-color: #F6EACB;
+            border-radius: 5px;
+            margin-left: 25px;
+            margin-top: 25px;
+        }
+
+        .canvasBtn {
+            text-align: center;
+            color: #F8F4E1;
+            position: relative;
+            left: 260px;
+            margin-top: 15px;
+            height: 30px;
+            width: 150px;
+            line-height:30px;
+            background-color: #6C4E31;
+            border-radius: 7px 7px 0 0;
+            font-size:1.2rem;
+            cursor:pointer;
+        }
+        .canvasBtn:hover {
+            background-color: #ECB176;
+        }
+
+        input {
+            font-family: "New Amsterdam", sans-serif;
+            width: 25px;
+            height: 20px;
+            font-size: 1.4rem;
+            background-color: #F6EACB;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            background-color: transparent;
+            text-align:right;
+            padding-right:7px;
+        }
+        input:focus {
+            outline: none;
+        }
+
+        .draw {
+            width: 50px;
+            height: 30px;
+            font-size: 0.8rem;
+            position: relative;
+            top: 10px;
+
+        }
+
+        .bigBox {
+            padding-top: 30px;
+            width: 1800px;
+            margin: auto;
+            height: 1100px;
+        }
+
+        .resetBtn {
+            background-color: #ECB176;
+            color: #F8F4E1;
+            height: 30px;
+            width: 30px;
+            position: relative;
+            top: 10px;
+        }
+
+        .moveBox {
+            font-family: "Do Hyeon", sans-serif;
+            width: 270px;
+            height: 420px;
+            padding: 15px;
+            border-radius: 20px;
+            background-color: #E4C59E;
+            box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+            position: relative;
+            margin-left: 20px;
+            display: none;
+            top: -328px;
+        }
+
+        .moveBtn1 {
+            position: relative;
+            top:13%;
+            left: 37%;
+        }
+        .moveBtn2 {
+            position: relative;
+            left: 40%;
+            top:28%;
+        }
+        .moveBtn3 {
+            position: relative;
+            left: -35%;
+            top:28%;
+        }
+        .moveBtn4 {
+            position: relative;
+            top:43%;
+            left: -33%;
+        }
+        .moveBtn5 {
+            position: relative;
+            top:55%;
+            left: 11.5%;
+        }
+        .moveBtn6 {
+            position: relative;
+            top:55%;
+            left: 13.5%;
+        }
+        .moveBtn7 {
+            position: relative;
+            top:55%;
+            left: 15.5%;
+        }
+                    </style>
+                    `;
+          targetDom.innerHTML = HTML + CSS;
+        } // 시각화 영역
+        displayData(item) {
+          document.getElementById(`result${this.id}`).innerHTML = item;
+        }
+        //Deck 영역
+        inputData() {
+          class Deck {
+            constructor(id) {
+              this.id = id;
+              this.storage = [];
+            }
+            pushItem(item) {
+              this.storage.push(item);
+            }
+            shiftItem() {
+              return this.storage.shift();
+            }
+            popItem() {
+              return this.storage.pop();
+            }
+          }
+          let tempString = "";
+          const CalculatorDeck = new Deck(Calculator);
+          //누르는 값을 가져오는 영역
+          document
+            .getElementById(`mainBox${this.id}`)
+            .addEventListener("click", (e) => {
+              if (
+                e.target.dataset.value != null &&
+                e.target.dataset.value != "=" &&
+                e.target.dataset.value != "C" &&
+                e.target.dataset.value != ">"
+              ) {
+                CalculatorDeck.pushItem(e.target.dataset.value);
+                tempString = "";
+                for (let i = 0; i < CalculatorDeck.storage.length; i++) {
+                  let tempV = "";
+                  tempV = CalculatorDeck.shiftItem();
+                  tempString += tempV;
+                  CalculatorDeck.pushItem(tempV);
+                }
+                this.displayData(tempString);
+              }
+              switch (e.target.dataset.value) {
+                case "=":
+                  try {
+                    let range = document.getElementById(`range${this.id}`);
+                    if (range.value == "0") {
+                      this.displayData(eval(tempString));
+                    }
+                    if (range.value == "1") {
+                      this.displayData(eval(tempString).toFixed(4));
+                    }
+                    if (range.value == "2") {
+                      this.displayData(eval(tempString).toFixed(3));
+                    }
+                    if (range.value == "3") {
+                      this.displayData(eval(tempString).toFixed(2));
+                    }
+                    if (range.value == "4") {
+                      this.displayData(eval(tempString).toFixed());
+                    }
+                    range.addEventListener("input", (e) => {
+                      switch (range.value) {
+                        case "0":
+                          this.displayData(eval(tempString));
+                          break;
+                        case "1":
+                          this.displayData(eval(tempString).toFixed(4));
+                          break;
+                        case "2":
+                          this.displayData(eval(tempString).toFixed(3));
+                          break;
+                        case "3":
+                          this.displayData(eval(tempString).toFixed(2));
+                          break;
+                        case "4":
+                          this.displayData(eval(tempString).toFixed());
+                          break;
+                      }
+                    });
+                  } catch (err) {
+                    this.displayData("Try again");
+                  }
+
+                  CalculatorDeck.storage = [];
+                  CalculatorDeck.pushItem(eval(tempString));
+                  break;
+                case "C":
+                  CalculatorDeck.storage = [];
+                  tempString = "";
+                  this.displayData(tempString);
+                  break;
+                case ">":
+                  CalculatorDeck.popItem();
+                  tempString = "";
+                  for (let i = 0; i < CalculatorDeck.storage.length; i++) {
+                    let tempV = "";
+                    tempV = CalculatorDeck.shiftItem();
+                    tempString += tempV;
+                    CalculatorDeck.pushItem(tempV);
+                  }
+                  this.displayData(tempString);
+                  break;
+              }
+            });
+        }
+        // 캔버스
+        canvasControl() {
+          class MakeCanvas {
+            constructor(id) {
+              this.id = id;
+              this.canvas = document.getElementById(`canvas${this.id}`);
+              this.pen = this.canvas.getContext("2d");
+              this.canvasWidth = this.canvas.width;
+              this.canvasHeight = this.canvas.height;
+              this.canvasWidthHalf = this.canvas.width / 2;
+              this.canvasHeightHalf = this.canvas.height / 2;
+              this.scaleFactor = 50;
+              this.basicY = 0;
+              this.basicX = 0;
+            } //캔버스를 화면에 출력하기
+            displayCanvas() {
+              document
+                .getElementById(`canvasBtn${this.id}`)
+                .addEventListener("click", () => {
+                  if (
+                    document.getElementById(`miniArea${this.id}`).style
+                      .display === "none" ||
+                    document.getElementById(`miniArea${this.id}`).style
+                      .display === ""
+                  ) {
+                    document.getElementById(
+                      `miniArea${this.id}`
+                    ).style.display = "inline-block";
+                    document.getElementById(`canvas${this.id}`).style.display =
+                      "inline-block";
+                    document.getElementById(
+                      `canvasArea${this.id}`
+                    ).style.display = "inline-block";
+                    document.getElementById(`moveBox${this.id}`).style.display =
+                      "inline-block";
+                    document.getElementById(`makeCalculator`).style.display =
+                      "inline-block";
+                  } else {
+                    document.getElementById(
+                      `miniArea${this.id}`
+                    ).style.display = "none";
+                    document.getElementById(`canvas${this.id}`).style.display =
+                      "none";
+                    document.getElementById(`moveBox${this.id}`).style.display =
+                      "none";
+                    document.getElementById(
+                      `canvasArea${this.id}`
+                    ).style.display = "none";
+                    document.getElementById(`makeCalculator`).style.display =
+                      "none";
+                  }
+                });
+            }
+            //점 찍는 함수
+            printDot(x, y) {
+              this.pen.fillRect(
+                this.canvasWidthHalf + this.basicX + x * this.scaleFactor,
+                this.canvasHeightHalf + this.basicY - y * this.scaleFactor,
+                1,
+                1
+              );
+            } //좌표 그려주는 함수
+            printCross() {
+              this.pen.fillStyle = "black";
+              for (let i = 0; i <= this.canvasWidth; i++) {
+                this.pen.fillRect(i, this.canvasHeightHalf + this.basicY, 1, 1);
+                this.pen.fillRect(this.canvasWidthHalf + this.basicX, i, 1, 1);
+              }
+            } //scaleFactor 그리는 함수
+            printScaleFactor() {
+              this.pen.fillStyle = "red";
+              //x 좌표 그리기
+              for (
+                let j = this.scaleFactor;
+                j <=
+                this.canvasWidth + Math.abs(this.basicX) + this.scaleFactor;
+                j += this.scaleFactor
+              ) {
+                for (let i = -5; i <= 5; i++) {
+                  this.pen.fillRect(
+                    this.scaleFactor * (j / this.scaleFactor) +
+                      this.canvasWidth / 2 +
+                      this.basicX,
+                    this.canvasWidth / 2 + this.basicY - i,
+                    1,
+                    1
+                  );
+                  this.pen.fillRect(
+                    this.scaleFactor * (-j / this.scaleFactor) +
+                      this.canvasWidth / 2 +
+                      this.basicX,
+                    this.canvasWidth / 2 + this.basicY - i,
+                    1,
+                    1
+                  );
+                }
+              }
+              //y 좌표 그리기
+              for (
+                let j = this.scaleFactor;
+                j <=
+                this.canvasHeight + Math.abs(this.basicY) + this.scaleFactor;
+                j += this.scaleFactor
+              ) {
+                for (let i = -5; i <= 5; i++) {
+                  this.pen.fillRect(
+                    this.canvasHeight / 2 + this.basicX - i,
+                    this.scaleFactor * (j / this.scaleFactor) +
+                      this.canvasHeight / 2 +
+                      this.basicY,
+                    1,
+                    1
+                  );
+                  this.pen.fillRect(
+                    this.canvasHeight / 2 + this.basicX - i,
+                    this.scaleFactor * (-j / this.scaleFactor) +
+                      this.canvasHeight / 2 +
+                      this.basicY,
+                    1,
+                    1
+                  );
+                }
+              }
+              this.pen.fillStyle = "black";
+            }
+            //1차 함수 그리기
+            equation_1() {
+              let linearFunctionA = Number(
+                eval(document.getElementById(`linearFunctionA${this.id}`).value)
+              );
+              let linearFunctionB = Number(
+                eval(document.getElementById(`linearFunctionB${this.id}`).value)
+              );
+              for (
+                let x = -this.canvasWidthHalf;
+                x <= this.canvasWidthHalf;
+                x = x + 0.01
+              ) {
+                let y = linearFunctionA * x + linearFunctionB;
+                this.pen.fillStyle = "black";
+                this.printDot(x, y);
+              }
+            }
+            //2차 함수 그리기
+            equation_2() {
+              let quadraticFunctionA = Number(
+                eval(
+                  document.getElementById(`quadraticFunctionA${this.id}`).value
+                )
+              );
+              let quadraticFunctionB = Number(
+                eval(
+                  document.getElementById(`quadraticFunctionB${this.id}`).value
+                )
+              );
+              let quadraticFunctionC = Number(
+                eval(
+                  document.getElementById(`quadraticFunctionC${this.id}`).value
+                )
+              );
+              for (
+                let x = -this.canvasWidthHalf;
+                x <= this.canvasWidthHalf;
+                x = x + 0.01
+              ) {
+                let y =
+                  quadraticFunctionA * x ** 2 +
+                  quadraticFunctionB * x +
+                  quadraticFunctionC;
+                this.pen.fillStyle = "blue";
+                this.printDot(x, y);
+              }
+            }
+            //3차 함수 그리기
+            equation_3() {
+              let cubicFunctionA = Number(
+                eval(document.getElementById(`cubicFunctionA${this.id}`).value)
+              );
+              let cubicFunctionB = Number(
+                eval(document.getElementById(`cubicFunctionB${this.id}`).value)
+              );
+              let cubicFunctionC = Number(
+                eval(document.getElementById(`cubicFunctionC${this.id}`).value)
+              );
+              let cubicFunctionD = Number(
+                eval(document.getElementById(`cubicFunctionD${this.id}`).value)
+              );
+              for (
+                let x = -this.canvasWidthHalf;
+                x <= this.canvasWidthHalf;
+                x = x + 0.01
+              ) {
+                let y =
+                  cubicFunctionA * x ** 3 +
+                  cubicFunctionB * x ** 2 +
+                  cubicFunctionC * x +
+                  cubicFunctionD;
+                this.pen.fillStyle = "green";
+                this.printDot(x, y);
+              }
+            }
+            // 원 그리기
+            equation_4() {
+              let circleA = Number(
+                eval(document.getElementById(`circleA${this.id}`).value)
+              );
+              let circleB = Number(
+                eval(document.getElementById(`circleB${this.id}`).value)
+              );
+              let r = Number(
+                eval(document.getElementById(`r${this.id}`).value)
+              );
+              for (let i = 0; i <= 360; i = i + 0.01) {
+                let cos = (i * Math.PI) / 180;
+                let sin = (i * Math.PI) / 180;
+                this.pen.fillStyle = "orange";
+                this.printDot(
+                  Math.cos(cos) * r + circleA,
+                  Math.sin(sin) * r + circleB
+                );
+              }
+            }
+            // 캔버스 초기화하기
+            reset() {
+              this.pen.clearRect(0, 0, this.canvas.width, this.canvas.height);
+              this.pen.fillStyle = "black";
+              this.printCross();
+              this.printScaleFactor();
+              document.getElementById(`linearFunctionA${this.id}`).value = "";
+              document.getElementById(`quadraticFunctionB${this.id}`).value =
+                "";
+              document.getElementById(`quadraticFunctionA${this.id}`).value =
+                "";
+              document.getElementById(`quadraticFunctionB${this.id}`).value =
+                "";
+              document.getElementById(`quadraticFunctionC${this.id}`).value =
+                "";
+              document.getElementById(`cubicFunctionA${this.id}`).value = "";
+              document.getElementById(`cubicFunctionB${this.id}`).value = "";
+              document.getElementById(`cubicFunctionC${this.id}`).value = "";
+              document.getElementById(`cubicFunctionD${this.id}`).value = "";
+              document.getElementById(`circleA${this.id}`).value = "";
+              document.getElementById(`circleB${this.id}`).value = "";
+              document.getElementById(`r${this.id}`).value = "";
+            }
+            // 버튼 눌러서 함수 그리기
+            draw() {
+              document
+                .getElementById(`drawBtn1${this.id}`)
+                .addEventListener("click", () => {
+                  this.equation_1();
+                });
+              document
+                .getElementById(`drawBtn2${this.id}`)
+                .addEventListener("click", () => {
+                  this.equation_2();
+                });
+              document
+                .getElementById(`drawBtn3${this.id}`)
+                .addEventListener("click", () => {
+                  this.equation_3();
+                });
+              document
+                .getElementById(`drawBtn4${this.id}`)
+                .addEventListener("click", () => {
+                  this.equation_4();
+                });
+              document
+                .getElementById(`resetBtn${this.id}`)
+                .addEventListener("click", () => {
+                  this.reset();
+                });
+            }
+            // X,Y 값 변경하기
+            moveXY() {
+              // y 값 증가
+              document
+                .getElementById(`moveBtn1${this.id}`)
+                .addEventListener("click", () => {
+                  this.basicY += 10;
+                  if (this.basicY > 490) {
+                    this.basicY = 490;
+                  }
+                  this.pen.clearRect(
+                    0,
+                    0,
+                    this.canvas.width,
+                    this.canvas.height
+                  );
+                  this.equation_1();
+                  this.equation_2();
+                  this.equation_3();
+                  this.equation_4();
+                  this.printCross();
+                  this.printScaleFactor();
+                });
+              //y 값 감소
+              document
+                .getElementById(`moveBtn4${this.id}`)
+                .addEventListener("click", () => {
+                  this.basicY -= 10;
+                  if (this.basicY < -490) {
+                    this.basicY = -490;
+                  }
+                  this.pen.clearRect(
+                    0,
+                    0,
+                    this.canvas.width,
+                    this.canvas.height
+                  );
+                  this.equation_1();
+                  this.equation_2();
+                  this.equation_3();
+                  this.equation_4();
+                  this.printCross();
+                  this.printScaleFactor();
+                });
+              //x 값 감소
+              document
+                .getElementById(`moveBtn2${this.id}`)
+                .addEventListener("click", () => {
+                  this.basicX -= 10;
+                  if (this.basicX < -490) {
+                    this.basicX = -490;
+                  }
+                  this.pen.clearRect(
+                    0,
+                    0,
+                    this.canvas.width,
+                    this.canvas.height
+                  );
+                  this.equation_1();
+                  this.equation_2();
+                  this.equation_3();
+                  this.equation_4();
+                  this.printCross();
+                  this.printScaleFactor();
+                });
+              //x 값 증가
+              document
+                .getElementById(`moveBtn3${this.id}`)
+                .addEventListener("click", () => {
+                  this.basicX += 10;
+                  if (this.basicX > 490) {
+                    this.basicX = 490;
+                  }
+                  this.pen.clearRect(
+                    0,
+                    0,
+                    this.canvas.width,
+                    this.canvas.height
+                  );
+                  this.equation_1();
+                  this.equation_2();
+                  this.equation_3();
+                  this.equation_4();
+                  this.printCross();
+                  this.printScaleFactor();
+                });
+              //scaleFactor 증가
+              document
+                .getElementById(`moveBtn5${this.id}`)
+                .addEventListener("click", () => {
+                  this.scaleFactor += 10;
+                  if (this.scaleFactor > 200) {
+                    this.scaleFactor = 200;
+                  }
+                  this.pen.clearRect(
+                    0,
+                    0,
+                    this.canvas.width,
+                    this.canvas.height
+                  );
+                  this.equation_1();
+                  this.equation_2();
+                  this.equation_3();
+                  this.equation_4();
+                  this.printCross();
+                  this.printScaleFactor();
+                });
+              //scaleFactor 감소
+              document
+                .getElementById(`moveBtn6${this.id}`)
+                .addEventListener("click", () => {
+                  this.scaleFactor -= 10;
+                  if (this.scaleFactor < 10) {
+                    this.scaleFactor = 10;
+                  }
+                  this.pen.clearRect(
+                    0,
+                    0,
+                    this.canvas.width,
+                    this.canvas.height
+                  );
+                  this.equation_1();
+                  this.equation_2();
+                  this.equation_3();
+                  this.equation_4();
+                  this.printCross();
+                  this.printScaleFactor();
+                });
+              //canvas 위치 값 리셋
+              document
+                .getElementById(`moveBtn7${this.id}`)
+                .addEventListener("click", () => {
+                  this.scaleFactor = 50;
+                  this.basicY = 0;
+                  this.basicX = 0;
+                  this.pen.clearRect(
+                    0,
+                    0,
+                    this.canvas.width,
+                    this.canvas.height
+                  );
+                  this.equation_1();
+                  this.equation_2();
+                  this.equation_3();
+                  this.equation_4();
+                  this.printCross();
+                  this.printScaleFactor();
+                });
+            }
+            // 캔버스 함수 호출
+            canvasControl() {
+              this.displayCanvas();
+              this.printCross();
+              this.printScaleFactor();
+              this.moveXY();
+              this.draw();
+            }
+          }
+          const MakeCan = new MakeCanvas(`${this.id}`);
+          MakeCan.canvasControl();
+        }
+        controlFun(targetDom) {
+          this.displayCalculator(targetDom);
+          this.inputData();
+          this.canvasControl();
+        }
+      }
+
+      const Calculator = new RealCalculator("Calculator");
+      Calculator.controlFun(document.getElementById("Calculator"));
+      // const Calculator2 = new RealCalculator('Calculator2');
+      // Calculator2.controlFun(document.getElementById('Calculator2'));
+
+      // 누르면 새로운 계산기 생성
+      class NewCalculator {
+        constructor(id) {
+          this.id = id;
+          this.indexId = 1;
+          this.tempArray = [];
+        }
+        makeCalculatorControl() {
+          const CalculatorArea = document.getElementById("CalculatorArea");
+          document
+            .getElementById("makeCalculBtn")
+            .addEventListener("click", () => {
+              this.indexId++;
+              const calcArea = document.createElement("div");
+              calcArea.id = `calcArea${this.indexId}`;
+              //CalculatorArea.appendChild(calcArea);
+              document.body.appendChild(calcArea);
+              const cal = new RealCalculator(`Calculator${this.indexId}`);
+              cal.controlFun(
+                document.getElementById(`calcArea${this.indexId}`)
+              );
+              this.tempArray.push(cal);
+            });
+        }
+      }
+      const newCalculator = new NewCalculator(`${this.id}`);
+      newCalculator.makeCalculatorControl();
+    </script>
+  </body>
+</html>
+
